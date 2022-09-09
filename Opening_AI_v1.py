@@ -1,6 +1,17 @@
 import numpy as np
 import cshogi as shogi
 
+"""
+A9, A8, A7, A6, A5, A4, A3, A2, A1
+B9, B8, B7, B6, B5, B4, B3, B2, B1
+C9, C8, C7, C6, C5, C4, C3, C2, C1
+D9, D8, D7, D6, D5, D4, D3, D2, D1
+E9, E8, E7, E6, E5, E4, E3, E2, E1
+F9, F8, F7, F6, F5, F4 F3, F2, F1
+G9, G8, G7, G6, G5, G4, G3, G2, G1
+H9, H8, H7, H6, H5, H4, H3, H2, H1
+I9, I8, I7, I6, I5, I4, I3, I2, I1
+"""
 
 def col_material(board):
     list_B = [shogi.BPAWN, shogi.BLANCE, shogi.BKNIGHT, shogi.BSILVER, shogi.BGOLD,
@@ -77,12 +88,29 @@ class Anaguma(opening_base):
         self.hozyo_W = [shogi.B6, shogi.B7, shogi.B8, shogi.A5, shogi.B4, shogi.B3, shogi.A4]
         self.hozyo_points_W = [30, 50, 100, -50, -110, -110, -110]
 
+class Mino(opening_base):
+    def __init__(self):
+        super().__init__()
+        self.squares_B = [shogi.H2, shogi.F1, shogi.H6, shogi.H3, shogi.I4, shogi.H5]
+        self.pieces_B = [shogi.KING, shogi.PAWN, shogi.ROOK, shogi.SILVER, shogi.GOLD, shogi.GOLD]
+        self.points_B = [300, 10, 100, 5, 50, 30]
+        self.hozyo_B = [shogi.H4, shogi.H3]
+        self.hozyo_points_B = [60, 70]
+
+        self.squares_W = [shogi.B8, shogi.D9, shogi.B4, shogi.B7, shogi.A6, shogi.B5]
+        self.pieces_W =  [shogi.KING, shogi.PAWN, shogi.ROOK, shogi.SILVER, shogi.GOLD, shogi.GOLD]
+        self.points_W = [300, 10, 100, 5, 50, 30]
+        self.hozyo_W = [shogi.B6, shogi.B7]
+        self.hozyo_points_W = [60, 70]
+
+opening_dict = {0: Anaguma, 1: Mino}
 
 class Opening_AI():
-    def __init__(self):
+    def __init__(self, opening_number=0):
+        global opening_dict
         self.mate_move_num = 7
         self.qsearch_depth = 4
-        self.opening = Anaguma()
+        self.opening = opening_dict[opening_number]()
         
         self.MAX = 1000000
         self.MIN = self.MAX * -1
@@ -217,5 +245,19 @@ class Opening_AI():
             AlphaBeta[0] = max((result, AlphaBeta[0]))
         return shogi.move_to_usi(bestmove)
 
+def test():
+    ai = Opening_AI(opening_number=1)
+    board = shogi.Board()
+    for i in range(18):
+        print('')
+        print(i)
+        print(board)
+        print(board.sfen())
+        move = ai.main(board.sfen())
+        board.push_usi(move)
+        print('')
+    return
+
 if __name__ == '__main__':
     ai = Opening_AI()
+    test()
