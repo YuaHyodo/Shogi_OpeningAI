@@ -103,7 +103,18 @@ class Mino(opening_base):
         self.hozyo_W = [shogi.B6, shogi.B7]
         self.hozyo_points_W = [60, 70]
 
-opening_dict = {0: Anaguma, 1: Mino}
+class Muteki(opening_base):
+    def __init__(self):
+        super().__init__()
+        self.squares_B = [shogi.I5, shogi.I6, shogi.I7, shogi.H5, shogi.H4, shogi.H6]
+        self.pieces_B = [shogi.KING, shogi.GOLD, shogi.GOLD, shogi.ROOK, shogi.SILVER, shogi.SILVER]
+        self.points_B = [100, 50, 50, 90, 50, 50]
+
+        self.squares_W = [shogi.A5, shogi.A6, shogi.A7, shogi.B5, shogi.B4, shogi.B6]
+        self.pieces_W = [shogi.KING, shogi.GOLD, shogi.GOLD, shogi.ROOK, shogi.SILVER, shogi.SILVER]
+        self.points_W = [100, 50, 50, 90, 50, 50]
+
+opening_dict = {0: Anaguma, 1: Mino, 2: Muteki}
 
 class Opening_AI():
     def __init__(self, opening_number=0):
@@ -246,14 +257,15 @@ class Opening_AI():
         return shogi.move_to_usi(bestmove)
 
 def test():
-    ai = Opening_AI(opening_number=1)
+    ai = Opening_AI(opening_number=2)
     board = shogi.Board()
-    for i in range(18):
+    for i in range(8):
         print('')
         print(i)
         print(board)
         print(board.sfen())
         move = ai.main(board.sfen())
+        print(move)
         board.push_usi(move)
         print('')
     return
